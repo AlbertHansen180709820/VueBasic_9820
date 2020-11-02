@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> UGD </title>
+        <script src="vue.js"> </script>
+    </head>
+
+    <body>
+        <div id="app"> 
+            <form name="form">
+                <br> </br>
+                <div class="div" v-if="path=='.'">
+                    <center>
+                        <div class="uk-card uk-card-default uk-width-1-2@m">
+                            <br> </br>
+                            <font size="5"> Tebak Angka! </font>
+                            <p> Tebaklah angka dari 1-10 </p>
+                            <input v-model="guess" TYPE="text" NAME="input" size="10"> </input>
+                            <br> </br>
+                            <input class="uk-button uk-button-primary" type="button" @click="checkInput()" value="Tebak"/>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                        </div>
+                    </center>
+                </div>
+                <div class="div" v-if="path!='.'">
+                    <center>
+                        <div class="uk-card uk-card-default uk-width-1-2@m">
+                            <br> </br>
+                            <font size="5"> Tebak Angka! </font>
+                            <p> Tebaklah angka dari 1-10 </p>
+                            <input v-model="guess" TYPE="text" NAME="input" size="10"> </input>
+                            <br> </br>
+                        </div>
+                        <div v-if="path=='salah'">
+                            <font size="5" color="red"> Tebakan kamu salah! </font>
+                            <br> </br>
+                            <font size="4"> Kamu masih punya {{ 3-i }} kesempatan lagi </font>
+                            <br> </br>
+                            <input class="uk-button uk-button-danger" type="button" @click="checkInput()" value="Tebak Lagi"/>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br>
+                        </div>
+                        <div class="div" v-if="path=='benar'">
+                            <font size="5"> Tebakan kamu benar! </font>
+                            <br> </br>
+                            <font size="4"> Angkanya adalah {{ n }} </font>
+                            <br> </br>
+                            <input class="uk-button uk-button-primary" type="button" name="again" value="Main Lagi" @click="reload()"/>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> 
+                        </div>
+                        <div class="div" v-if="path=='gagal'">
+                            <font size="5"> Kesempatan kamu habis!</font>
+                            <br> </br>
+                            <font size="4"> Jawabannya adalah {{ n }} </font>
+                            <br> </br>
+                            <input class="uk-button uk-button-primary" type="button" name="again" value="Main Lagi" @click="reload()"/>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> </br>
+                            <br> 
+                        </div>
+                    </center>
+                </div>
+            </form>
+            <div class="uk-position-bottom uk-overlay uk-overlay-default uk-text-center" ALIGN="center"> {{ nama }} | {{ npm }} | {{ kelas }} </div>
+        </div>
+    </body>
+
+    <script>
+        new Vue
+        ({
+            el: '#app',
+            data: 
+            {
+                n: -1,
+                i: 0,
+                path: ".",
+                guess: "",
+                nama: "Albert Hansen",
+                npm: "180709820",
+                kelas: "PAW C"
+            },
+            methods: 
+            {
+                setRndNumber: function() 
+                {
+                    do 
+                    {
+                        this.n=Math.ceil(Math.random()*10);
+                    } 
+                    while(this.n>10 || this.n<1);
+                    console.log(this.n)
+                },
+                checkInput: function (input) 
+                {
+                    if (this.n==-1) 
+                    {
+                        this.setRndNumber();
+                    }
+                    let num=parseInt(this.guess);
+                    this.guess="";
+                    num=Math.ceil(num);
+                    if(num>=1 && num<=10) 
+                    {
+                        ++this.i;
+                        if(num==this.n) 
+                        {
+                            this.path="benar";
+                        } 
+                        else 
+                        {
+                            if(this.i==3) 
+                            {
+                                this.path="gagal";
+                            } 
+                            else 
+                            {
+                                if (num>this.n || num<this.n) 
+                                {
+                                    this.path="salah";
+                                }
+                            }
+                        }
+                        form.reset();
+                    } 
+                    else 
+                    {
+                        alert("Angka harus antara 1 sampai 10.");
+                        form.reset();
+                    }
+                },
+                reload: function() 
+                {
+                    this.path=".";
+                    this.setRndNumber();
+                    this.i=0;
+                }     
+            }
+        });
+    </script>
+
+</html>
