@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TGS</title>
+        <link rel="stylesheet" href="css/uikit.min.css" />
+        <script src="js/uikit.min.js"></script>
+        <script src="js/uikit-icons.min.js"></script>
+        <script src="vue.js"></script>
+    </head>
+
+    <body>
+        <div class="view" id="app">
+            <task-list :tasks="tasks"></task-list>
+            <div class="uk-position-bottom uk-overlay uk-overlay-default uk-text-center" ALIGN="center" style="position: fixed !important;">{{nama}} | {{npm}} | {{kelas}}</div>
+        </div>
+        
+        <template id="task-list">
+            <section class="tasks">
+                <center>
+                    <h1>
+                        <font size="10">To-Do List 📝</font>
+                    </h1>
+                </center>
+                <div class="uk-card uk-card-default uk-width-1-2@m uk-position-small uk-position-center" style="padding: 20px; width: 40vw; transform: translate(-50%, 0%); min-height: 50vh; margin-bottom: 20vh;">
+                    <div class="tasks__new input-group">
+                        <form name="form">
+                            <fieldset class="uk-fieldset">
+                                <h5 class="uk-text-normal uk-text-primary">Apa yang mau kamu kerjakan?</h5>
+                                <input class="uk-textarea" type="text" v-model="title" ALIGN="left">
+                                <h5 class="uk-text-normal uk-text-primary">Penting gak?</h5>
+                                <select class="uk-select" name="prior" v-model="priority">
+                                    <option value="Penting" selected>Penting</option>
+                                    <option value="Biasa">Biasa</option>
+                                    <option value="Tidak Penting">Tidak Penting</option>
+                                </select>
+                                <h5 class="uk-text-normal uk-text-primary">Ada catatan penting?</h5>
+                                <textarea class="uk-textarea" type="text" v-model="note"></textarea>
+                            </fieldset>
+                        </form>
+                        <br>
+                        <span class="input-group-button">
+                            <button class="uk-button uk-button-danger uk-button-small" @click="resetTask" class="button">Reset</button>
+                        </span>
+                        <span class="input-group-button">
+                            <button class="uk-button uk-button-primary uk-button-small" @click="addTask" class="button">Simpan</button>
+                        </span>
+                    </div>
+                </div>
+                <transition-group name="fade" tag="ul" class="uk-position-top-center" style="margin-top: 60px; width: 40vw; overflow-y: auto; max-height: 40vh;transform: translate(-48%, 5%);">
+                    <task-item v-for="(task, index) in tasks" @remove="removeTask(index)" :task="task" :key="task"></task-item>
+                </transition-group>
+            </section>
+        </template>
+        
+        <template id="task-item">
+            <ul>
+                <div class="uk-card uk-card-secondary uk-card-body uk-light" style="padding: 20px;">
+                    <button class="uk-button uk-button-danger uk-position-top-right" @click="$emit('remove')">
+                        <i uk-icon="close"></i>
+                    </button>
+                    <font size="5" v-if="task.priority=='Penting'" style="color: red !important">
+                        {{ task.priority }}
+                    </font>
+                    <font size="5" v-if="task.priority=='Biasa'" style="color: blue !important">
+                        {{ task.priority }}
+                    </font>
+                    <font size="5" v-if="task.priority=='Tidak Penting'" style="color: green !important">
+                        {{ task.priority }}
+                    </font>
+                    <h3>{{ task.title }}</h3>
+                    <p>{{ task.note }}</p>
+                </div>
+            </ul>
+        </template>
+    </body>
+
+    <script>
+        Vue.component('task-list', 
+        {
+            template: '#task-list',
+            props: { tasks: { default: [] } },
+            data() 
+            {
+                return {
+                    title: '', 
+                    priority: '',
+                    note: '' 
+                };
+            },
+            computed: 
+            {
+                incomplete() 
+                {
+                    return this.tasks.filter(this.inProgress).length;
+                } 
+            },
+            methods: 
+            {
+                addTask() 
+                {
+                    if (this.title && this.priority && this.note) 
+                    {
+                        this.tasks.push
+                        ({
+                            title: this.title,
+                            priority: this.priority,
+                            note: this.note,
+                            completed: false 
+                        });
+                        this.title = '';
+                        this.priority = '';
+                        this.note = '';
+                    }
+                },
+                resetTask()
+                {
+                    this.title = '';
+                    this.priority = '';
+                    this.note = '';
+                },
+                removeTask(index) 
+                {
+                    this.tasks.splice(index, 1);
+                },
+                clearAll() 
+                {
+                    this.tasks = [];
+                }
+            } 
+        });
+        Vue.component('task-item', 
+        {
+            template: '#task-item',
+            props: ['task'],
+            computed: 
+            {
+                className() 
+                {
+                    let classes = ['tasks__item__toggle'];
+                    if (this.task.completed) 
+                    {
+                        classes.push('tasks__item__toggle--completed');
+                    }
+                    return classes.join(' ');
+                } 
+            } 
+        });
+    
+        new Vue
+        ({
+            el: '#app',
+            data: {
+                tasks: [],
+                nama: "Albert Hansen",
+                npm: "180709820",
+                kelas: "PAW C"
+            }
+        });
+    </script>
+
+</html>
